@@ -1,7 +1,7 @@
 'use strict';
 
 var apiRouter = require('express').Router();
-var paymentController = require(__dirname + '/../app/controllers/payment');
+var paymentController = require(__dirname + '/controllers/payment');
 
 module.exports = function (app) {
   apiRouter.post('/submit-order', paymentController.selectPaymentGateway, paymentController.processPayment);
