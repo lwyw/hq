@@ -38,6 +38,7 @@ exports.selectPaymentGateway = function (req, res, next) {
     return next();
     
   } else {
+    winston.error('No suitable gateway found', { formData: req.body });
     err = new Error('No suitable gateway found');
     err.formData = req.body;
     return next(err);

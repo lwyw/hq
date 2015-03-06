@@ -74,7 +74,7 @@ describe('Payment api tests', function () {
     });
   });
 
-  it('should return http status of 200 upon valid payment', function (done) {
+  it('should return http status of 200 upon valid payment (Braintree)', function (done) {
     var order = {
       hqPrice: "1000",
       hqCurrency: "SGD",
@@ -89,13 +89,28 @@ describe('Payment api tests', function () {
       .post('/api/submit-order')
       .type('form')
       .send(order)
-      .end(function (err, res) {
-        assert.equal(res.status, 200);
-        done();
-      });
+      .expect(200, done);
   });
 
-  it('should return http status of 400 upon invalid CC Num', function (done) {
+  it('should return http status of 200 upon valid payment (PayPal)', function (done) {
+    var order = {
+      hqPrice: "1000",
+      hqCurrency: "USD",
+      hqName: "Joe Black",
+      hqCCName: "Joe Shopper",
+      hqCCNum: "4417119669820331",
+      hqCCExp: "2018-11-01",
+      hqCCV: "874"
+    };
+
+    request(app)
+      .post('/api/submit-order')
+      .type('form')
+      .send(order)
+      .expect(200, done);
+  });
+
+  it('should return http status of 400 upon invalid CC Num (Braintree)', function (done) {
     var order = {
       hqPrice: "1000",
       hqCurrency: "SGD",
@@ -110,10 +125,25 @@ describe('Payment api tests', function () {
       .post('/api/submit-order')
       .type('form')
       .send(order)
-      .end(function (err, res) {
-        assert.equal(res.status, 400);
-        done();
-      });
+      .expect(400, done);
+  });
+
+  it('should return http status of 400 upon invalid CC Num (PayPal)', function (done) {
+    var order = {
+      hqPrice: "1000",
+      hqCurrency: "USD",
+      hqName: "Joe Black",
+      hqCCName: "Joe Shopper",
+      hqCCNum: "411111111",
+      hqCCExp: "2018-11-01",
+      hqCCV: "874"
+    };
+
+    request(app)
+      .post('/api/submit-order')
+      .type('form')
+      .send(order)
+      .expect(400, done);
   });
 
 });

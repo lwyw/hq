@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "mocha --timeout 60000 test/*.js"
+    "start": "npm install && bower install && node server.js",
+    "test": "mocha --timeout 60000 --reporter nyan test/*.js"
   },
   "repository": {
     "type": "git",
@@ -28,7 +29,6 @@
   },
   "devDependencies": {
     "mocha": "^2.1.0",
-    "superagent": "^0.21.0",
     "supertest": "^0.15.0"
   }
 }
