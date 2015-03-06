@@ -19,7 +19,7 @@ function createBraintreeJSON(formData) {
       number: formData.hqCCNum,
       expirationMonth: expDate.getMonth() + 1,
       expirationYear: expDate.getFullYear(),
-      cardholderName: formData.hqCCName ? formData.hqCCName.trim() : null,
+      cardholderName: formData.hqCCName,
       cvv: formData.hqCCV
     },
     customer: {

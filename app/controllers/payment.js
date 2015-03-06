@@ -95,7 +95,7 @@ exports.processPayment = function (req, res, next) {
     payment.transaction = data;
     
     //save to database
-    payment.save(function (err) {
+    payment.save(function (err, data) {
       if (err) {
         winston.error('Error from saving payment data', { formData: req.body, error: err });
         return res.status(500).json({status: 500, message: 'Error saving'});
