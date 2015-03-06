@@ -2,8 +2,9 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var bcrypt = require('bcrypt');
-var SALT_WORK_FACTOR = 10;
+var crypto = require('crypto'),
+  algorithm = 'aes-256-ctr',
+  password = 'd6F3Efeq';
 
 var paymentSchema = new Schema({
   'hqPrice': Number,
@@ -19,34 +20,27 @@ var paymentSchema = new Schema({
   'created' : { 'type' : Date, 'default': Date.now() }
 });
 
-//hash CC number before saving
+//encrypt CC number before saving
 paymentSchema.pre('save', function (next) {
-  var payment = this;
+  var cipher, crypted, payment = this;
 
-  // only hash the CC number if it has been modified (or is new)
+  //only encrypt the CC number if it has been modified (or is new)
   if (!payment.isModified('hqCCNum')) { return next(); }
 
-  // generate a salt
-  bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
-    if (err) { return next(err); }
-
-    // hash the hqCCNum using our new salt
-    bcrypt.hash(payment.hqCCNum, salt, function (err, hash) {
-      if (err) { return next(err); }
-
-      // override the cleartext hqCCNum with the hashed one
-      payment.hqCCNum = hash;
-      next();
-    });
-  });
+  //encrypt
+  cipher = crypto.createCipher(algorithm, password);
+  crypted = cipher.update(this.hqCCNum, 'utf8', 'hex');
+  crypted += cipher.final('hex');
+  this.hqCCNum = crypted;
+  next();
 });
 
-//compare CC number to database
-paymentSchema.methods.compareCCNum = function (candidateCCNum, callback) {
-  bcrypt.compare(candidateCCNum, this.hqCCNum, function (err, isMatch) {
-    if (err) { return callback(err); }
-    callback(null, isMatch);
-  });
+//decrypt CC number
+paymentSchema.methods.decryptCCNum = function (candidateCCNum) {
+  var dec, decipher = crypto.createDecipher(algorithm, password);
+  dec = decipher.update(candidateCCNum, 'hex', 'utf8');
+  dec += decipher.final('utf8');
+  return dec;
 };
 
 module.exports = mongoose.model('Payment', paymentSchema);
