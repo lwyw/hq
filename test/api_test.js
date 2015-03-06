@@ -87,7 +87,6 @@ describe('Payment api tests', function () {
 
     request(app)
       .post('/api/submit-order')
-      .type('form')
       .send(order)
       .expect(200, done);
   });
@@ -105,7 +104,6 @@ describe('Payment api tests', function () {
 
     request(app)
       .post('/api/submit-order')
-      .type('form')
       .send(order)
       .expect(200, done);
   });
@@ -123,7 +121,6 @@ describe('Payment api tests', function () {
 
     request(app)
       .post('/api/submit-order')
-      .type('form')
       .send(order)
       .expect(400, done);
   });
@@ -141,7 +138,6 @@ describe('Payment api tests', function () {
 
     request(app)
       .post('/api/submit-order')
-      .type('form')
       .send(order)
       .expect(400, done);
   });
@@ -159,7 +155,6 @@ describe('Payment api tests', function () {
 
     request(app)
       .post('/api/submit-order')
-      .type('form')
       .send(order)
       .expect(400, done);
   });
@@ -177,7 +172,6 @@ describe('Payment api tests', function () {
 
     request(app)
       .post('/api/submit-order')
-      .type('form')
       .send(order)
       .expect(200, done);
   });
@@ -195,7 +189,6 @@ describe('Payment api tests', function () {
 
     request(app)
       .post('/api/submit-order')
-      .type('form')
       .send(order)
       .expect(400, done);
   });
