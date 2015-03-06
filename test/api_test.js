@@ -81,7 +81,7 @@ describe('Payment api tests', function () {
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
       hqCCNum: "4111111111111111",
-      hqCCExp: "2018-11-01",
+      hqCCExp: ((new Date()).getFullYear() + 1) + "-01-01",
       hqCCV: "874"
     };
 
@@ -99,7 +99,7 @@ describe('Payment api tests', function () {
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
       hqCCNum: "4417119669820331",
-      hqCCExp: "2018-11-01",
+      hqCCExp: ((new Date()).getFullYear() + 1) + "-01-01",
       hqCCV: "874"
     };
 
@@ -116,8 +116,8 @@ describe('Payment api tests', function () {
       hqCurrency: "SGD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
-      hqCCNum: "411111111",
-      hqCCExp: "2018-11-01",
+      hqCCNum: "9820331",
+      hqCCExp: ((new Date()).getFullYear() + 1) + "-01-01",
       hqCCV: "874"
     };
 
@@ -134,9 +134,63 @@ describe('Payment api tests', function () {
       hqCurrency: "USD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
-      hqCCNum: "411111111",
-      hqCCExp: "2018-11-01",
+      hqCCNum: "9820331",
+      hqCCExp: ((new Date()).getFullYear() + 1) + "-01-01",
       hqCCV: "874"
+    };
+
+    request(app)
+      .post('/api/submit-order')
+      .type('form')
+      .send(order)
+      .expect(400, done);
+  });
+
+  it('should return http status of 400 upon expired credit card', function (done) {
+    var order = {
+      hqPrice: "1000",
+      hqCurrency: "USD",
+      hqName: "Joe Black",
+      hqCCName: "Joe Shopper",
+      hqCCNum: "4417119669820331",
+      hqCCExp: ((new Date()).getFullYear() - 1) + "-01-01",
+      hqCCV: "874"
+    };
+
+    request(app)
+      .post('/api/submit-order')
+      .type('form')
+      .send(order)
+      .expect(400, done);
+  });
+
+  it('should return http status of 200 upon AMEX credit card with USD currency', function (done) {
+    var order = {
+      hqPrice: "1000",
+      hqCurrency: "USD",
+      hqName: "Joe Black",
+      hqCCName: "Joe Shopper",
+      hqCCNum: "347693095942474",
+      hqCCExp: ((new Date()).getFullYear() + 1) + "-01-01",
+      hqCCV: "8743"
+    };
+
+    request(app)
+      .post('/api/submit-order')
+      .type('form')
+      .send(order)
+      .expect(200, done);
+  });
+
+  it('should return http status of 400 upon AMEX credit card with non-USD currency', function (done) {
+    var order = {
+      hqPrice: "1000",
+      hqCurrency: "SGD",
+      hqName: "Joe Black",
+      hqCCName: "Joe Shopper",
+      hqCCNum: "347693095942474",
+      hqCCExp: ((new Date()).getFullYear() + 1) + "-01-01",
+      hqCCV: "8743"
     };
 
     request(app)
