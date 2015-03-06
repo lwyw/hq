@@ -16,10 +16,19 @@ var winston = require('winston'),
 exports.selectPaymentGateway = function (req, res, next) {
   var err, formData = req.body,
     ccType = creditCard.getCreditCardType(formData.hqCCNum),
-    currency = formData.hqCurrency.trim();
+    currency = formData.hqCurrency.trim(),
+    expDate = new Date(formData.hqCCExp);
   
-  //error message for invalid credit card number
+  //check for invalid credit card number
   if (!ccType) { return res.status(400).json({ status: 400, message: 'Invalid credit card number' }); }
+
+  //check for expired card
+  if (expDate.getFullYear() < (new Date()).getFullYear()) {
+    return res.status(400).json({ status: 400, message: 'Overdued expiration date' });
+
+  } else if (expDate.getFullYear() === (new Date()).getFullYear() && expDate.getMonth() < (new Date()).getMonth()) {
+    return res.status(400).json({ status: 400, message: 'Overdued expiration date' });
+  }
 
   if (ccType === 'amex') {
     if (currency === 'USD') {
