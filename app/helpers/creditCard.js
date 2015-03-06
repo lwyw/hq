@@ -16,6 +16,10 @@ exports.getCreditCardType = function (ccNum) {
     return 'amex';
   } else if (/^6(?:011|5[0-9]{2})[0-9]{12}$/.test(ccNum)) {
     return 'discover';
+  } else if (/^3(?:0[0-5]|[68][0-9])[0-9]{11}$/.test(ccNum)) {
+    return 'diners';
+  } else if (/^(?:2131|1800|35\d{3})\d{11}$/.test(ccNum)) {
+    return 'jcb';
   } else {
     return null;
   }

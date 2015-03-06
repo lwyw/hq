@@ -31,6 +31,10 @@ describe('App server tests', function () {
       {ccNum: 4111111111111111, type: 'visa'},
       {ccNum: 4012888888881881, type: 'visa'},
       {ccNum: 4417119669820331, type: 'visa'},
+      {ccNum: 30569309025904, type: 'diners'},
+      {ccNum: 38520000023237, type: 'diners'},
+      {ccNum: 3530111333300000, type: 'jcb'},
+      {ccNum: 3566002020360505, type: 'jcb'},
       {ccNum: 707070709700741, type: null},
       {ccNum: 65050420, type: null},
       {ccNum: 43214321, type: null}
