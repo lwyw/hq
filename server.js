@@ -4,6 +4,7 @@ var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
 var morgan = require('morgan');
+var winston = require('winston');
 var bodyParser = require('body-parser');
 var mongoConfig = require(__dirname + '/config/mongo');
 var routerConfig = require(__dirname + '/app/routes');
@@ -22,8 +23,12 @@ paypalGateway.setGateway(paypalConfig());
 //configure braintree and set gateway for helper
 braintreeGateway.setGateway(braintreeConfig());
 
-//logging
+//console logging
 app.use(morgan('dev'));
+
+//file logging
+winston.add(winston.transports.File, { filename: 'server.log' });
+winston.remove(winston.transports.Console);
 
 //use body parser
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -37,8 +42,8 @@ routerConfig(app);
 //catch unanticipated error
 app.use(function (err, req, res, next) {
   if (err) {
-    console.log(err);
-    return res.status(500).send('Internal Server Error');
+    winston.error('Error', { error: err });
+    return res.status(500).json({status: 500, message: err || 'Internal Server Error'});
   }
 });
 

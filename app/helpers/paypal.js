@@ -25,8 +25,8 @@ function createPayPalJSON(formData) {
           "expire_month": expDate.getMonth() + 1,
           "expire_year": expDate.getFullYear(),
           "cvv2": formData.hqCCV,
-          "first_name": name[0] ? name[0].trim() : "",
-          "last_name": name[1] ? name[1].trim() : ""
+          "first_name": name[0] ? name[0].trim() : null,
+          "last_name": name[1] ? name[1].trim() : null
         }
       }]
     },

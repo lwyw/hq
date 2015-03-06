@@ -70,7 +70,7 @@
           </form>
         </div>
         <div class="col-md-6">
-          <h3 style="color: {{outputColor}};">Output</h3>
+          <h3 style="color: {{outputColor}};">{{outputHeader || 'Output'}}</h3>
           <samp ng-bind="output"></samp>
         </div>
       </div>
@@ -90,17 +90,20 @@
           $scope.submit = function () {
             $scope.hqForm.disabled = true;
             $scope.processing = true;
+            $scope.outputHeader = 'Output'
             $scope.outputColor = 'black';
             delete $scope.output;
             console.log($scope.form);
             $http.post($location.protocol() + '://' + $location.host() + ':' + $location.port() + '/api/submit-order', $scope.form)
               .success(function (data) {
                 $scope.output = JSON.stringify(data);
+                $scope.outputHeader = 'Success';
                 $scope.outputColor = 'green';
                 $scope.processing = false;       
               })
               .error(function (data, status, headers, config) {
                 $scope.output = JSON.stringify(data);
+                $scope.outputHeader = 'Error';
                 $scope.outputColor = 'red';
                 $scope.processing = false;
               })

@@ -1,6 +1,7 @@
 'use strict';
 
-var paypalGateway = require(__dirname + '/../helpers/paypal'),
+var winston = require('winston'),
+  paypalGateway = require(__dirname + '/../helpers/paypal'),
   braintreeGateway = require(__dirname + '/../helpers/braintree'),
   creditCard = require(__dirname + '/../helpers/creditCard'),
   Payment = require(__dirname + '/../models/payment'),
@@ -17,6 +18,9 @@ exports.selectPaymentGateway = function (req, res, next) {
     ccType = creditCard.getCreditCardType(formData.hqCCNum),
     currency = formData.hqCurrency.trim();
   
+  //error message for invalid credit card number
+  if (!ccType) { return res.status(400).json({ status: 400, message: 'Invalid credit card number' }); }
+
   if (ccType === 'amex') {
     if (currency === 'USD') {
       req.gateway = paypalGateway;
@@ -50,6 +54,7 @@ exports.processPayment = function (req, res, next) {
   var gateway, err;
   
   if (!req.gateway) {
+    winston.error('No suitable gateway found', { formData: req.body });
     err = new Error('No suitable gateway found');
     err.formData = req.body;
     return next(err);
@@ -58,9 +63,13 @@ exports.processPayment = function (req, res, next) {
   gateway = req.gateway;
   gateway.processPayment(req.body, function (err, data) {
     //send bad reqest upon bad data
-    if (err || !data) {
-      console.log(err || 'error: empty data');
-      return res.status(400).json({status: 400, message: err || 'Bad Request'});
+    if (err) {
+      winston.error('Error from processing payment', { formData: req.body, error: err });
+      return res.status(400).json({ status: 400, message: err });
+
+    } else if (!data) {
+      winston.error('No response from processing payment', { formData: req.body, error: 'No response' });
+      return res.status(400).json({status: 400, message: 'Bad Request'});
     }
     
     //create new data
@@ -77,10 +86,11 @@ exports.processPayment = function (req, res, next) {
     
     //save to database
     payment.save(function (err) {
-      if (err || !data) {
-        console.log(err || 'error: empty data');
+      if (err) {
+        winston.error('Error from saving payment data', { formData: req.body, error: err });
         return res.status(500).json({status: 500, message: 'Error saving'});
       }
+
       //send transaction data
       return res.json(data);
     });
