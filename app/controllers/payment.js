@@ -22,7 +22,7 @@ exports.selectPaymentGateway = function (req, res, next) {
       req.gateway = paypalGateway;
       return next();
     } else {
-      return res.status(400).send('Cannot use AMEX with other currencies besides USD');
+      return res.status(400).json({status: 400, message: 'Cannot use AMEX with other currencies besides USD'});
     }
     
   } else if (currency.length === 3) {
@@ -60,7 +60,7 @@ exports.processPayment = function (req, res, next) {
     //send bad reqest upon bad data
     if (err || !data) {
       console.log(err || 'error: empty data');
-      return res.status(400).send(err || 'Bad Request');
+      return res.status(400).json({status: 400, message: err || 'Bad Request'});
     }
     
     //create new data
@@ -79,7 +79,7 @@ exports.processPayment = function (req, res, next) {
     payment.save(function (err) {
       if (err || !data) {
         console.log(err || 'error: empty data');
-        return res.status(500).send('Error saving');
+        return res.status(500).json({status: 500, message: 'Error saving'});
       }
       //send transaction data
       return res.json(data);

@@ -12,7 +12,7 @@ var paymentSchema = new Schema({
   'hqCCName': String,
   'hqCCNum': String,
   'hqCCExp': Date,
-  'hqCCV': Number,
+  'hqCCV': String,
   'paymentType': { 'type': String, 'enum': ['PayPal', 'Braintree']},
   'transaction': Schema.Types.Mixed,
   
@@ -23,7 +23,7 @@ var paymentSchema = new Schema({
 paymentSchema.pre('save', function (next) {
   var payment = this;
 
-  // only hash the password if it has been modified (or is new)
+  // only hash the CC number if it has been modified (or is new)
   if (!payment.isModified('hqCCNum')) { return next(); }
 
   // generate a salt
