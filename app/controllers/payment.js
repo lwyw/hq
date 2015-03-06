@@ -92,7 +92,7 @@ exports.processPayment = function (req, res, next) {
 
     } else if (!data) {
       winston.error('No response from processing payment', { formData: req.body, error: 'No response' });
-      return res.status(400).json({status: 400, message: 'Bad Request'});
+      return res.status(400).json({status: 400, message: 'No response'});
     }
     
     req.transaction = data;
