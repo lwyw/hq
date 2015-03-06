@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "npm install && bower install && node server.js",
-    "test": "mocha --timeout 60000 --reporter nyan test/*.js"
+    "test": "npm install && mocha --timeout 60000 --reporter nyan test/*.js"
   },
   "repository": {
     "type": "git",

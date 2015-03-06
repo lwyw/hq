@@ -75,13 +75,13 @@ describe('Payment api tests', function () {
   });
 
   it('should return http status of 200 upon valid payment (Braintree)', function (done) {
-    var order = {
+    var dt = new Date(), order = {
       hqPrice: "1000",
       hqCurrency: "SGD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
       hqCCNum: "4111111111111111",
-      hqCCExp: ((new Date()).getFullYear() + 1) + "-01-01",
+      hqCCExp: dt.setMonth(dt.getMonth() + 1),
       hqCCV: "874"
     };
 
@@ -92,13 +92,13 @@ describe('Payment api tests', function () {
   });
 
   it('should return http status of 200 upon valid payment (PayPal)', function (done) {
-    var order = {
+    var dt = new Date(), order = {
       hqPrice: "1000",
       hqCurrency: "USD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
       hqCCNum: "4417119669820331",
-      hqCCExp: ((new Date()).getFullYear() + 1) + "-01-01",
+      hqCCExp: dt.setMonth(dt.getMonth() + 1),
       hqCCV: "874"
     };
 
@@ -109,13 +109,13 @@ describe('Payment api tests', function () {
   });
 
   it('should return http status of 400 upon invalid CC Num (Braintree)', function (done) {
-    var order = {
+    var dt = new Date(), order = {
       hqPrice: "1000",
       hqCurrency: "SGD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
       hqCCNum: "9820331",
-      hqCCExp: ((new Date()).getFullYear() + 1) + "-01-01",
+      hqCCExp: dt.setMonth(dt.getMonth() + 1),
       hqCCV: "874"
     };
 
@@ -126,13 +126,13 @@ describe('Payment api tests', function () {
   });
 
   it('should return http status of 400 upon invalid CC Num (PayPal)', function (done) {
-    var order = {
+    var dt = new Date(), order = {
       hqPrice: "1000",
       hqCurrency: "USD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
       hqCCNum: "9820331",
-      hqCCExp: ((new Date()).getFullYear() + 1) + "-01-01",
+      hqCCExp: dt.setMonth(dt.getMonth() + 1),
       hqCCV: "874"
     };
 
@@ -143,13 +143,13 @@ describe('Payment api tests', function () {
   });
 
   it('should return http status of 400 upon expired credit card', function (done) {
-    var order = {
+    var dt = new Date(), order = {
       hqPrice: "1000",
       hqCurrency: "USD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
       hqCCNum: "4417119669820331",
-      hqCCExp: ((new Date()).getFullYear() - 1) + "-01-01",
+      hqCCExp: dt.setMonth(dt.getMonth() - 1),
       hqCCV: "874"
     };
 
@@ -160,13 +160,13 @@ describe('Payment api tests', function () {
   });
 
   it('should return http status of 200 upon AMEX credit card with USD currency', function (done) {
-    var order = {
+    var dt = new Date(), order = {
       hqPrice: "1000",
       hqCurrency: "USD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
       hqCCNum: "347693095942474",
-      hqCCExp: ((new Date()).getFullYear() + 1) + "-01-01",
+      hqCCExp: dt.setMonth(dt.getMonth() + 1),
       hqCCV: "8743"
     };
 
@@ -177,13 +177,13 @@ describe('Payment api tests', function () {
   });
 
   it('should return http status of 400 upon AMEX credit card with non-USD currency', function (done) {
-    var order = {
+    var dt = new Date(), order = {
       hqPrice: "1000",
       hqCurrency: "SGD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
       hqCCNum: "347693095942474",
-      hqCCExp: ((new Date()).getFullYear() + 1) + "-01-01",
+      hqCCExp: dt.setMonth(dt.getMonth() + 1),
       hqCCV: "8743"
     };
 
