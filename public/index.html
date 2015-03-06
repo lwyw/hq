@@ -30,7 +30,7 @@
               <fieldset ng-disabled="processing">
               <div class="form-group">
                 <label for="hqPrice">Price</label>
-                <input name="hqPrice" type="number" class="form-control" id="hqPrice" placeholder="e.g. 123.45" ng-pattern="/^\d+\.\d{2}$/" ng-model="form.hqPrice" required>
+                <input name="hqPrice" type="number" class="form-control" id="hqPrice" placeholder="e.g. 123.45" ng-pattern="/^\d+(?:\.\d{2})?$/" ng-model="form.hqPrice" required>
               </div>
               <div class="form-group">
                 <label for="hqCurrency">Currency</label>
