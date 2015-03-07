@@ -11,7 +11,7 @@ function createBraintreeJSON(formData) {
   var braintreeJSON,
     name = formData.hqName.split(" "),  //split name into first and last name by space
     expDate = new Date(formData.hqCCExp);  //split date into year, month and day array
-  
+
   //generate Braintree JSON object
   braintreeJSON = {
     amount: formData.hqPrice,
@@ -27,7 +27,7 @@ function createBraintreeJSON(formData) {
       lastName: name[1] ? name[1].trim() : null
     }
   };
-  
+
   return braintreeJSON;
 }
 
@@ -49,16 +49,16 @@ exports.setGateway = function (braintree) {
 exports.processPayment = function (formData, callback) {
   //throw error if Braintree object is not set
   if (!braintreeGateway) { return callback(new Error('Braintree object not set')); }
-  
+
   var braintreeJSON = createBraintreeJSON(formData);
-  
+
   braintreeGateway.transaction.sale(braintreeJSON, function (err, res) {
     if (err) {
       return callback(err);
     } else if (!res) {
       return callback(new Error('No response'));
     }
-    
+
     //check if transaction was a success, if not return error response
     if (res.success) {
       return callback(null, res);

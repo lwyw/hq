@@ -1,8 +1,8 @@
 'use strict';
 
 var winston = require('winston'),
-  paypalGateway = require(__dirname + '/../helpers/paypal'),
-  braintreeGateway = require(__dirname + '/../helpers/braintree'),
+  paypalGateway = require(__dirname + '/../gateways/paypal'),
+  braintreeGateway = require(__dirname + '/../gateways/braintree'),
   creditCard = require(__dirname + '/../helpers/creditCard'),
   Payment = require(__dirname + '/../models/payment'),
   paypalCurrency = ['USD', 'EUR', 'AUD'];
@@ -41,30 +41,23 @@ exports.checkCreditCard = function (req, res, next) {
 exports.selectPaymentGateway = function (req, res, next) {
   var err, formData = req.body,
     ccType = creditCard.getCreditCardType(formData.hqCCNum),
-    currency = formData.hqCurrency.trim();
+    currency = formData.hqCurrency ? formData.hqCurrency.trim() : null;
 
   if (ccType === 'amex') {
     if (currency === 'USD') {
       req.gateway = paypalGateway;
-      return next();
     } else {
       return res.status(400).json({status: 400, message: 'Cannot use AMEX with other currencies besides USD'});
     }
     
-  } else if (currency.length === 3) {
-    if (paypalCurrency.indexOf(currency) === -1) {
-      req.gateway = braintreeGateway;
-    } else {
-      req.gateway = paypalGateway;
-    }
-    return next();
+  } else if (paypalCurrency.indexOf(currency) !== -1) {
+    req.gateway = paypalGateway;
     
   } else {
-    winston.error('No suitable gateway found', { formData: req.body });
-    err = new Error('No suitable gateway found');
-    err.formData = req.body;
-    return next(err);
+    req.gateway = braintreeGateway;
   }
+
+  return next();
 };
 
 /**
@@ -77,8 +70,8 @@ exports.processPayment = function (req, res, next) {
   var gateway, err;
   
   if (!req.gateway) {
-    winston.error('No suitable gateway found', { formData: req.body });
-    err = new Error('No suitable gateway found');
+    winston.error('No gateway found', { formData: req.body });
+    err = new Error('No gateway found');
     err.formData = req.body;
     return next(err);
   }

@@ -9,9 +9,9 @@ var bodyParser = require('body-parser');
 var mongoConfig = require(__dirname + '/config/mongo');
 var routerConfig = require(__dirname + '/app/routes');
 var paypalConfig = require(__dirname + '/config/paypal');
-var paypalGateway = require(__dirname + '/app/helpers/paypal');
+var paypalGateway = require(__dirname + '/app/gateways/paypal');
 var braintreeConfig = require(__dirname + '/config/braintree');
-var braintreeGateway = require(__dirname + '/app/helpers/braintree');
+var braintreeGateway = require(__dirname + '/app/gateways/braintree');
 var port = process.env.PORT || 8080;
 
 //configure mongo database

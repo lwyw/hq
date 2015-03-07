@@ -60,9 +60,9 @@ exports.setGateway = function (paypal) {
 exports.processPayment = function (formData, callback) {
   //throw error if PayPal object is not set
   if (!paypalGateway) { return callback(new Error('PayPal object not set')); }
-  
+
   var payPalJSON = createPayPalJSON(formData);
-  
+
   //create PayPal payment
   paypalGateway.payment.create(payPalJSON, function (err, res) {
     //return callback with error for PayPal
