@@ -122,7 +122,10 @@ describe('Payment api tests', function () {
     request(app)
       .post('/api/submit-order')
       .send(order)
-      .expect(400, done);
+      .expect(400, function (err, res) {
+        assert.equal(res.body.message, 'Invalid credit card number');
+        done(err);
+      });
   });
 
   it('should return http status of 400 upon invalid CC Num (PayPal)', function (done) {
@@ -139,7 +142,10 @@ describe('Payment api tests', function () {
     request(app)
       .post('/api/submit-order')
       .send(order)
-      .expect(400, done);
+      .expect(400, function (err, res) {
+        assert.equal(res.body.message, 'Invalid credit card number');
+        done(err);
+      });
   });
 
   it('should return http status of 400 upon expired credit card', function (done) {
@@ -156,7 +162,10 @@ describe('Payment api tests', function () {
     request(app)
       .post('/api/submit-order')
       .send(order)
-      .expect(400, done);
+      .expect(400, function (err, res) {
+        assert.equal(res.body.message, 'Overdued expiration date');
+        done(err);
+      });
   });
 
   it('should return http status of 200 upon AMEX credit card with USD currency', function (done) {
@@ -190,7 +199,10 @@ describe('Payment api tests', function () {
     request(app)
       .post('/api/submit-order')
       .send(order)
-      .expect(400, done);
+      .expect(400, function (err, res) {
+        assert.equal(res.body.message, 'Cannot use AMEX with other currencies besides USD');
+        done(err);
+      });
   });
 
 });
