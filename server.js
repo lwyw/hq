@@ -11,7 +11,7 @@ var routerConfig = require(__dirname + '/app/routes');
 var port = process.env.PORT || 8080;
 //database
 var mongoConfig = require(__dirname + '/config/mongo');
-//gateway
+//gateways
 var paypalConfig = require(__dirname + '/config/paypal');
 var paypalGateway = require(__dirname + '/app/gateways/paypal');
 var braintreeConfig = require(__dirname + '/config/braintree');
