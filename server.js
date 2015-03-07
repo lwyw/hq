@@ -1,18 +1,22 @@
 'use strict';
 
+//server
+var winston = require('winston');
+//app
 var express = require('express');
 var app = express();
 var morgan = require('morgan');
-var winston = require('winston');
 var bodyParser = require('body-parser');
+var routerConfig = require(__dirname + '/app/routes');
+var port = process.env.PORT || 8080;
+//database
 var nedbConfig = require(__dirname + '/config/nedb');
 var Payment = require(__dirname + '/app/models/payment');
-var routerConfig = require(__dirname + '/app/routes');
+//gatways
 var paypalConfig = require(__dirname + '/config/paypal');
 var paypalGateway = require(__dirname + '/app/gateways/paypal');
 var braintreeConfig = require(__dirname + '/config/braintree');
 var braintreeGateway = require(__dirname + '/app/gateways/braintree');
-var port = process.env.PORT || 8080;
 
 //file logging
 winston.add(winston.transports.File, { filename: 'server.log' });

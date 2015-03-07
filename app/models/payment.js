@@ -12,14 +12,18 @@ function encryptCCNum(CCNum) {
   cipher = crypto.createCipher(algorithm, password);
   crypted = cipher.update(CCNum, 'utf8', 'hex');
   crypted += cipher.final('hex');
+
   return crypted;
 }
 
 //decrypt CC number
 function decryptCCNum(candidateCCNum) {
   var dec, decipher = crypto.createDecipher(algorithm, password);
+
+  //decrypt
   dec = decipher.update(candidateCCNum, 'hex', 'utf8');
   dec += decipher.final('utf8');
+
   return dec;
 }
 
