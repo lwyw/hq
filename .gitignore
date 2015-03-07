@@ -3,3 +3,4 @@
 /bower_components
 /app/npm-debug.log
 /server.log
+/payments.db

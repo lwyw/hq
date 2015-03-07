@@ -2,11 +2,11 @@
 
 var express = require('express');
 var app = express();
-var mongoose = require('mongoose');
 var morgan = require('morgan');
 var winston = require('winston');
 var bodyParser = require('body-parser');
-var mongoConfig = require(__dirname + '/config/mongo');
+var nedbConfig = require(__dirname + '/config/nedb');
+var Payment = require(__dirname + '/app/models/payment');
 var routerConfig = require(__dirname + '/app/routes');
 var paypalConfig = require(__dirname + '/config/paypal');
 var paypalGateway = require(__dirname + '/app/gateways/paypal');
@@ -14,8 +14,12 @@ var braintreeConfig = require(__dirname + '/config/braintree');
 var braintreeGateway = require(__dirname + '/app/gateways/braintree');
 var port = process.env.PORT || 8080;
 
-//configure mongo database
-mongoConfig();
+//file logging
+winston.add(winston.transports.File, { filename: 'server.log' });
+winston.remove(winston.transports.Console);
+
+//configure neDB database
+Payment.setDB(nedbConfig.config());
 
 //configure paypal and set gateway for helper
 paypalGateway.setGateway(paypalConfig());
@@ -25,10 +29,6 @@ braintreeGateway.setGateway(braintreeConfig());
 
 //console logging
 app.use(morgan('dev'));
-
-//file logging
-winston.add(winston.transports.File, { filename: 'server.log' });
-winston.remove(winston.transports.Console);
 
 //use body parser
 app.use(bodyParser.urlencoded({ extended: true }));

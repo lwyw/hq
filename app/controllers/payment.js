@@ -101,7 +101,7 @@ exports.processPayment = function (req, res, next) {
  */
 exports.savePayment = function (req, res, next) {
   //create new data
-  var payment = new Payment();
+  var payment = {};
   payment.hqPrice = req.body.hqPrice;
   payment.hqCurrency = req.body.hqCurrency;
   payment.hqName = req.body.hqName;
@@ -113,7 +113,7 @@ exports.savePayment = function (req, res, next) {
   payment.transaction = req.transaction;
 
   //save to database
-  payment.save(function (err, data) {
+  Payment.insert(payment, function (err, data) {
     if (err) {
       winston.error('Error from saving payment data', { formData: req.body, error: err });
       return res.status(500).json({status: 500, message: 'Error saving'});
