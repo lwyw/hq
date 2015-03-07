@@ -76,7 +76,7 @@ describe('Payment api tests', function () {
 
   it('should return http status of 200 upon valid payment (Braintree)', function (done) {
     var dt = new Date(), order = {
-      hqPrice: "1000",
+      hqPrice: (Math.random() * 1000).toFixed(2),
       hqCurrency: "SGD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
@@ -93,7 +93,7 @@ describe('Payment api tests', function () {
 
   it('should return http status of 200 upon valid payment (PayPal)', function (done) {
     var dt = new Date(), order = {
-      hqPrice: "1000",
+      hqPrice: (Math.random() * 1000).toFixed(2),
       hqCurrency: "USD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
@@ -110,7 +110,7 @@ describe('Payment api tests', function () {
 
   it('should return http status of 400 upon invalid CC Num (Braintree)', function (done) {
     var dt = new Date(), order = {
-      hqPrice: "1000",
+      hqPrice: (Math.random() * 1000).toFixed(2),
       hqCurrency: "SGD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
@@ -127,7 +127,7 @@ describe('Payment api tests', function () {
 
   it('should return http status of 400 upon invalid CC Num (PayPal)', function (done) {
     var dt = new Date(), order = {
-      hqPrice: "1000",
+      hqPrice: (Math.random() * 1000).toFixed(2),
       hqCurrency: "USD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
@@ -144,7 +144,7 @@ describe('Payment api tests', function () {
 
   it('should return http status of 400 upon expired credit card', function (done) {
     var dt = new Date(), order = {
-      hqPrice: "1000",
+      hqPrice: (Math.random() * 1000).toFixed(2),
       hqCurrency: "USD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
@@ -161,7 +161,7 @@ describe('Payment api tests', function () {
 
   it('should return http status of 200 upon AMEX credit card with USD currency', function (done) {
     var dt = new Date(), order = {
-      hqPrice: "1000",
+      hqPrice: (Math.random() * 1000).toFixed(2),
       hqCurrency: "USD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
@@ -178,7 +178,7 @@ describe('Payment api tests', function () {
 
   it('should return http status of 400 upon AMEX credit card with non-USD currency', function (done) {
     var dt = new Date(), order = {
-      hqPrice: "1000",
+      hqPrice: (Math.random() * 1000).toFixed(2),
       hqCurrency: "SGD",
       hqName: "Joe Black",
       hqCCName: "Joe Shopper",
