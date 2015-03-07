@@ -1,7 +1,7 @@
 # hq
 ## Dependencies
-<p>~~<a href="http://www.mongodb.org/">MongoDB</a> running with default settings~~</p>
-<p>Using NeDB as database store instead. No non-npm dependencies!</p>
+~~<a href="http://www.mongodb.org/">MongoDB</a> running with default settings~~
+Using NeDB as database store instead. No non-npm dependencies!
 ## Start
 npm start
 ## Test
