@@ -1,17 +1,25 @@
 'use strict';
 
+//server
+var winston = require('winston');
+//app
 var express = require('express');
 var app = express();
 var morgan = require('morgan');
-var winston = require('winston');
 var bodyParser = require('body-parser');
-var mongoConfig = require(__dirname + '/config/mongo');
 var routerConfig = require(__dirname + '/app/routes');
+var port = process.env.PORT || 8080;
+//database
+var mongoConfig = require(__dirname + '/config/mongo');
+//gateway
 var paypalConfig = require(__dirname + '/config/paypal');
 var paypalGateway = require(__dirname + '/app/gateways/paypal');
 var braintreeConfig = require(__dirname + '/config/braintree');
 var braintreeGateway = require(__dirname + '/app/gateways/braintree');
-var port = process.env.PORT || 8080;
+
+//file logging
+winston.add(winston.transports.File, { filename: 'server.log' });
+winston.remove(winston.transports.Console);
 
 //configure mongo database
 mongoConfig();
@@ -24,10 +32,6 @@ braintreeGateway.setGateway(braintreeConfig());
 
 //console logging
 app.use(morgan('dev'));
-
-//file logging
-winston.add(winston.transports.File, { filename: 'server.log' });
-winston.remove(winston.transports.Console);
 
 //use body parser
 app.use(bodyParser.urlencoded({ extended: true }));
