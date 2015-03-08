@@ -1,10 +1,38 @@
 'use strict';
 
-var apiRouter = require('express').Router();
-var paymentController = require(__dirname + '/controllers/payment');
+var winston = require('winston'),
+  paymentPlugin = require(__dirname + '/plugins/payment');
 
-module.exports = function (app) {
-  apiRouter.post('/submit-order', paymentController.checkCreditCard, paymentController.selectPaymentGateway, paymentController.processPayment, paymentController.savePayment);
-  //use configured router
-  app.use('/api', apiRouter);
+module.exports = function (server) {
+  //static route
+  server.route({
+    method: 'GET',
+    path: '/{param*}',
+    handler: {
+      directory: {
+        path: 'public'
+      }
+    }
+  });
+  //bower components static route
+  server.route({
+    method: 'GET',
+    path: '/components/{param*}',
+    handler: {
+      directory: {
+        path: 'bower_components',
+        listing: true
+      }
+    }
+  });
+
+  //payment plugin
+  server.register({
+    register: paymentPlugin
+  }, { routes: { prefix: '/api' } }, function (err) {
+    if (err) {
+      winston.error('Error registering payment plugin', { error: err });
+      throw err;
+    }
+  });
 };
