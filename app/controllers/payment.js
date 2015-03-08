@@ -17,15 +17,15 @@ exports.checkCreditCard = function (formData, callback) {
   
   //check for invalid credit card number
   if (!ccType) {
-    return callback({ status: 400, message: 'Invalid credit card number' });
+    return callback({ statusCode: 400, message: 'Invalid credit card number' });
   }
 
   //check for expired card
   if (expDate.getFullYear() < (new Date()).getFullYear()) {
-    return callback({ status: 400, message: 'Overdued expiration date' });
+    return callback({ statusCode: 400, message: 'Overdued expiration date' });
 
   } else if (expDate.getFullYear() === (new Date()).getFullYear() && expDate.getMonth() < (new Date()).getMonth()) {
-    return callback({ status: 400, message: 'Overdued expiration date' });
+    return callback({ statusCode: 400, message: 'Overdued expiration date' });
   }
 
   return callback();
@@ -44,7 +44,7 @@ exports.selectPaymentGateway = function (formData, callback) {
     if (currency === 'USD') {
       gateway = paypalGateway;
     } else {
-      return callback({status: 400, message: 'Cannot use AMEX with other currencies besides USD'});
+      return callback({statusCode: 400, message: 'Cannot use AMEX with other currencies besides USD'});
     }
     
   } else if (paypalCurrency.indexOf(currency) !== -1) {
@@ -75,10 +75,10 @@ exports.processPayment = function (formData, gateway, callback) {
   gateway.processPayment(formData, function (err, data) {
     //send bad reqest upon bad data
     if (err) {
-      return callback({ status: 400, message: err });
+      return callback({ statusCode: 400, message: err });
 
     } else if (!data) {
-      return callback({status: 400, message: 'No paymeent response'});
+      return callback({statusCode: 400, message: 'No paymeent response'});
     }
     
     return callback(null, gateway, data);
@@ -108,7 +108,7 @@ exports.savePayment = function (formData, gateway, transaction, callback) {
   //save to database
   Payment.insert(payment, function (err, data) {
     if (err) {
-      return callback({status: 500, message: 'Error saving'});
+      return callback({statusCode: 500, message: 'Error saving'});
     }
 
     //send transaction data

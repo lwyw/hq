@@ -24,8 +24,7 @@ exports.register = function (server, options, next) {
         }
       ], function (err, data) {
         if (err) {
-          var res = reply(err);
-          res.statusCode = 400;
+          reply(err).statusCode = err.statusCode || 500;
           return;
         }
 
