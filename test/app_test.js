@@ -2,7 +2,7 @@
 
 var app = require(__dirname + '/../server'),
   request = require('supertest'),
-  assert = require('assert'),
+  should = require('should'),
   creditCard = require(__dirname + '/../app/helpers/creditCard');
 
 describe('App server tests', function () {
@@ -40,7 +40,7 @@ describe('App server tests', function () {
       {ccNum: 43214321, type: null}
     ];
     tests.forEach(function (t) {
-      assert.equal(creditCard.getCreditCardType(t.ccNum), t.type);
+      should(creditCard.getCreditCardType(t.ccNum)).be.equal(t.type);
     });
   });
 

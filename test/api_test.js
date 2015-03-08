@@ -2,7 +2,7 @@
 
 var app = require(__dirname + '/../server'),
   request = require('supertest'),
-  assert = require('assert'),
+  should = require('should'),
   paymentsController = require(__dirname + '/../app/controllers/payment');
 
 describe('Payment api tests', function () {
@@ -21,34 +21,34 @@ describe('Payment api tests', function () {
 
     //choose Braintree on SGD, THB, HKD
     paymentsController.selectPaymentGateway(req, null, function () {
-      assert.equal(req.gateway.type, 'Braintree');
+      should(req.gateway.type).be.equal('Braintree');
     });
     req.body.hqCurrency = 'THB';
     delete req.gateway;
     paymentsController.selectPaymentGateway(req, null, function () {
-      assert.equal(req.gateway.type, 'Braintree');
+      should(req.gateway.type).be.equal('Braintree');
     });
     req.body.hqCurrency = 'HKD';
     delete req.gateway;
     paymentsController.selectPaymentGateway(req, null, function () {
-      assert.equal(req.gateway.type, 'Braintree');
+      should(req.gateway.type).be.equal('Braintree');
     });
 
     //choose PayPal gatewy on USD, EUR and AUD
     req.body.hqCurrency = 'USD';
     delete req.gateway;
     paymentsController.selectPaymentGateway(req, null, function () {
-      assert.equal(req.gateway.type, 'PayPal');
+      should(req.gateway.type).be.equal('PayPal');
     });
     req.body.hqCurrency = 'EUR';
     delete req.gateway;
     paymentsController.selectPaymentGateway(req, null, function () {
-      assert.equal(req.gateway.type, 'PayPal');
+      should(req.gateway.type).be.equal('PayPal');
     });
     req.body.hqCurrency = 'AUD';
     delete req.gateway;
     paymentsController.selectPaymentGateway(req, null, function () {
-      assert.equal(req.gateway.type, 'PayPal');
+      should(req.gateway.type).be.equal('PayPal');
     });
 
     //sends an error on AMEX and non-USD
@@ -64,13 +64,13 @@ describe('Payment api tests', function () {
     };
     delete req.gateway;
     paymentsController.selectPaymentGateway(req, res);
-    assert.equal(err, 400);
-    assert.equal(msg, 'Cannot use AMEX with other currencies besides USD');
+    should(err).be.equal(400);
+    should(msg).be.equal('Cannot use AMEX with other currencies besides USD');
 
     //choose PayPal on AMEX and USD
     req.body.hqCurrency = 'USD';
     paymentsController.selectPaymentGateway(req, null, function () {
-      assert.equal(req.gateway.type, 'PayPal');
+      should(req.gateway.type).be.equal('PayPal');
     });
   });
 
@@ -123,7 +123,7 @@ describe('Payment api tests', function () {
       .post('/api/submit-order')
       .send(order)
       .expect(400, function (err, res) {
-        assert.equal(res.body.message, 'Invalid credit card number');
+        should(res.body.message).be.equal('Invalid credit card number');
         done(err);
       });
   });
@@ -143,7 +143,7 @@ describe('Payment api tests', function () {
       .post('/api/submit-order')
       .send(order)
       .expect(400, function (err, res) {
-        assert.equal(res.body.message, 'Invalid credit card number');
+        should(res.body.message).be.equal('Invalid credit card number');
         done(err);
       });
   });
@@ -163,7 +163,7 @@ describe('Payment api tests', function () {
       .post('/api/submit-order')
       .send(order)
       .expect(400, function (err, res) {
-        assert.equal(res.body.message, 'Overdued expiration date');
+        should(res.body.message).be.equal('Overdued expiration date');
         done(err);
       });
   });
@@ -200,7 +200,7 @@ describe('Payment api tests', function () {
       .post('/api/submit-order')
       .send(order)
       .expect(400, function (err, res) {
-        assert.equal(res.body.message, 'Cannot use AMEX with other currencies besides USD');
+        should(res.body.message).be.equal('Cannot use AMEX with other currencies besides USD');
         done(err);
       });
   });
