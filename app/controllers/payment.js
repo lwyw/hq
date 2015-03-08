@@ -67,21 +67,19 @@ exports.processPayment = function (formData, gateway, callback) {
   var err;
   
   if (!gateway) {
-    err = new Error('No gateway found');
-    err.formData = formData;
-    return callback(err);
+    return callback({ statusCode: 500, message: 'No gateway found' });
   }
   
-  gateway.processPayment(formData, function (err, data) {
+  gateway.processPayment(formData, function (err, transaction) {
     //send bad reqest upon bad data
     if (err) {
       return callback({ statusCode: 400, message: err });
 
-    } else if (!data) {
-      return callback({statusCode: 400, message: 'No paymeent response'});
+    } else if (!transaction) {
+      return callback({statusCode: 400, message: 'No payment response'});
     }
     
-    return callback(null, gateway, data);
+    return callback(null, gateway, transaction);
   });
 };
 

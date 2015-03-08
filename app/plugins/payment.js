@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async'),
+  winston = require('winston'),
   pkg = require(__dirname + '/../../package.json'),
   paymentController = require(__dirname + '/../controllers/payment');
 
@@ -24,6 +25,7 @@ exports.register = function (server, options, next) {
         }
       ], function (err, data) {
         if (err) {
+          winston.error('Error processing payment', { formData: request.payload, error: err });
           reply(err).statusCode = err.statusCode || 500;
           return;
         }
