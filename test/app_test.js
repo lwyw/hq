@@ -1,22 +1,29 @@
 'use strict';
 
 var app = require(__dirname + '/../server'),
-  request = require('supertest'),
+  request = require('superagent'),
   should = require('should'),
-  creditCard = require(__dirname + '/../app/helpers/creditCard');
+  creditCard = require(__dirname + '/../app/helpers/creditCard'),
+  url = 'http://localhost:8080';
 
 describe('App server tests', function () {
 
   it('should return http status of 200 upon url root query', function (done) {
-    request(app)
-      .get('/')
-      .expect(200, done);
+    request
+      .get(url)
+      .end(function (res) {
+        should(res.status).be.equal(200);
+        done();
+      });
   });
 
   it('should return http status of 404 upon unknown url', function (done) {
-    request(app)
-      .get('/notfound')
-      .expect(404, done);
+    request
+      .get(url + '/notfound')
+      .end(function (res) {
+        should(res.status).be.equal(404);
+        done();
+      });
   });
 
   it('should select the correct credit card type', function () {

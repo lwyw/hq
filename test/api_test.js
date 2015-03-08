@@ -1,15 +1,15 @@
 'use strict';
 
 var app = require(__dirname + '/../server'),
-  request = require('supertest'),
+  request = require('superagent'),
   should = require('should'),
-  paymentsController = require(__dirname + '/../app/controllers/payment');
+  paymentsController = require(__dirname + '/../app/controllers/payment'),
+  url = 'http://localhost:8080';
 
 describe('Payment api tests', function () {
 
   it('should choose the right gateway', function () {
-    var msg, err, req = {}, res = {};
-    req.body = {
+    var formData = {
       hqPrice: "1000",
       hqCurrency: "SGD",
       hqName: "Joe Black",
@@ -20,57 +20,43 @@ describe('Payment api tests', function () {
     };
 
     //choose Braintree on SGD, THB, HKD
-    paymentsController.selectPaymentGateway(req, null, function () {
-      should(req.gateway.type).be.equal('Braintree');
+    paymentsController.selectPaymentGateway(formData, function (err, gateway) {
+      should(gateway.type).be.equal('Braintree');
     });
-    req.body.hqCurrency = 'THB';
-    delete req.gateway;
-    paymentsController.selectPaymentGateway(req, null, function () {
-      should(req.gateway.type).be.equal('Braintree');
+    formData.hqCurrency = 'THB';
+    paymentsController.selectPaymentGateway(formData, function (err, gateway) {
+      should(gateway.type).be.equal('Braintree');
     });
-    req.body.hqCurrency = 'HKD';
-    delete req.gateway;
-    paymentsController.selectPaymentGateway(req, null, function () {
-      should(req.gateway.type).be.equal('Braintree');
+    formData.hqCurrency = 'HKD';
+    paymentsController.selectPaymentGateway(formData, function (err, gateway) {
+      should(gateway.type).be.equal('Braintree');
     });
 
     //choose PayPal gatewy on USD, EUR and AUD
-    req.body.hqCurrency = 'USD';
-    delete req.gateway;
-    paymentsController.selectPaymentGateway(req, null, function () {
-      should(req.gateway.type).be.equal('PayPal');
+    formData.hqCurrency = 'USD';
+    paymentsController.selectPaymentGateway(formData, function (err, gateway) {
+      should(gateway.type).be.equal('PayPal');
     });
-    req.body.hqCurrency = 'EUR';
-    delete req.gateway;
-    paymentsController.selectPaymentGateway(req, null, function () {
-      should(req.gateway.type).be.equal('PayPal');
+    formData.hqCurrency = 'EUR';
+    paymentsController.selectPaymentGateway(formData, function (err, gateway) {
+      should(gateway.type).be.equal('PayPal');
     });
-    req.body.hqCurrency = 'AUD';
-    delete req.gateway;
-    paymentsController.selectPaymentGateway(req, null, function () {
-      should(req.gateway.type).be.equal('PayPal');
+    formData.hqCurrency = 'AUD';
+    paymentsController.selectPaymentGateway(formData, function (err, gateway) {
+      should(gateway.type).be.equal('PayPal');
     });
 
     //sends an error on AMEX and non-USD
-    req.body.hqCurrency = 'SGD';
-    req.body.hqCCNum = '378282246310005';
-    res.status = function (e) {
-      err = e;
-      return this;
-    };
-    res.json = function (m) {
-      msg = m.message;
-      return this;
-    };
-    delete req.gateway;
-    paymentsController.selectPaymentGateway(req, res);
-    should(err).be.equal(400);
-    should(msg).be.equal('Cannot use AMEX with other currencies besides USD');
+    formData.hqCurrency = 'SGD';
+    formData.hqCCNum = '378282246310005';
+    paymentsController.selectPaymentGateway(formData, function (err, gateway) {
+      should(err).be.eql({statusCode: 400, message: 'Cannot use AMEX with other currencies besides USD'});
+    });
 
     //choose PayPal on AMEX and USD
-    req.body.hqCurrency = 'USD';
-    paymentsController.selectPaymentGateway(req, null, function () {
-      should(req.gateway.type).be.equal('PayPal');
+    formData.hqCurrency = 'USD';
+    paymentsController.selectPaymentGateway(formData, function (err, gateway) {
+      should(gateway.type).be.equal('PayPal');
     });
   });
 
@@ -85,10 +71,13 @@ describe('Payment api tests', function () {
       hqCCV: "874"
     };
 
-    request(app)
-      .post('/api/submit-order')
+    request
+      .post(url + '/api/submit-order')
       .send(order)
-      .expect(200, done);
+      .end(function (res) {
+        should(res.status).be.equal(200);
+        done();
+      });
   });
 
   it('should return http status of 200 upon valid payment (PayPal)', function (done) {
@@ -102,10 +91,13 @@ describe('Payment api tests', function () {
       hqCCV: "874"
     };
 
-    request(app)
-      .post('/api/submit-order')
+    request
+      .post(url + '/api/submit-order')
       .send(order)
-      .expect(200, done);
+      .end(function (res) {
+        should(res.status).be.equal(200);
+        done();
+      });
   });
 
   it('should return http status of 400 upon invalid CC Num (Braintree)', function (done) {
@@ -119,12 +111,13 @@ describe('Payment api tests', function () {
       hqCCV: "874"
     };
 
-    request(app)
-      .post('/api/submit-order')
+    request
+      .post(url + '/api/submit-order')
       .send(order)
-      .expect(400, function (err, res) {
+      .end(function (res) {
+        should(res.status).be.equal(400);
         should(res.body.message).be.equal('Invalid credit card number');
-        done(err);
+        done();
       });
   });
 
@@ -139,12 +132,13 @@ describe('Payment api tests', function () {
       hqCCV: "874"
     };
 
-    request(app)
-      .post('/api/submit-order')
+    request
+      .post(url + '/api/submit-order')
       .send(order)
-      .expect(400, function (err, res) {
+      .end(function (res) {
+        should(res.status).be.equal(400);
         should(res.body.message).be.equal('Invalid credit card number');
-        done(err);
+        done();
       });
   });
 
@@ -159,12 +153,13 @@ describe('Payment api tests', function () {
       hqCCV: "874"
     };
 
-    request(app)
-      .post('/api/submit-order')
+    request
+      .post(url + '/api/submit-order')
       .send(order)
-      .expect(400, function (err, res) {
+      .end(function (res) {
+        should(res.status).be.equal(400);
         should(res.body.message).be.equal('Overdued expiration date');
-        done(err);
+        done();
       });
   });
 
@@ -179,10 +174,13 @@ describe('Payment api tests', function () {
       hqCCV: "8743"
     };
 
-    request(app)
-      .post('/api/submit-order')
+    request
+      .post(url + '/api/submit-order')
       .send(order)
-      .expect(200, done);
+      .end(function (res) {
+        should(res.status).be.equal(200);
+        done();
+      });
   });
 
   it('should return http status of 400 upon AMEX credit card with non-USD currency', function (done) {
@@ -196,12 +194,13 @@ describe('Payment api tests', function () {
       hqCCV: "8743"
     };
 
-    request(app)
-      .post('/api/submit-order')
+    request
+      .post(url + '/api/submit-order')
       .send(order)
-      .expect(400, function (err, res) {
+      .end(function (res) {
+        should(res.status).be.equal(400);
         should(res.body.message).be.equal('Cannot use AMEX with other currencies besides USD');
-        done(err);
+        done();
       });
   });
 
