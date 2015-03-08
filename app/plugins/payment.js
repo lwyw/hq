@@ -26,8 +26,7 @@ exports.register = function (server, options, next) {
       ], function (err, data) {
         if (err) {
           winston.error('Error processing payment', { formData: request.payload, error: err });
-          reply(err).statusCode = err.statusCode || 500;
-          return;
+          return reply(err).code(err.statusCode || 500);
         }
 
         return reply(data);
