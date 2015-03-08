@@ -9,9 +9,28 @@ exports.register = function (server, options, next) {
     method: 'POST',
     path: '/submit-order',
     handler: function (request, reply) {
+      async.waterfall([
+        function (callback) {
+          paymentController.checkCreditCard(request.payload, callback);
+        },
+        function (callback) {
+          paymentController.selectPaymentGateway(request.payload, callback);
+        },
+        function (gateway, callback) {
+          paymentController.processPayment(request.payload, gateway, callback);
+        },
+        function (gateway, transaction, callback) {
+          paymentController.savePayment(request.payload, gateway, transaction, callback);
+        }
+      ], function (err, data) {
+        if (err) {
+          var res = reply(err);
+          res.statusCode = 400;
+          return;
+        }
 
-
-
+        return reply(data);
+      });
     }
   });
 

@@ -5,10 +5,10 @@ var winston = require('winston');
 //app
 var Hapi = require('hapi');
 var server = new Hapi.Server();
-var good = require('good');
 var routeConfig = require(__dirname + '/app/routes');
 var port = process.env.PORT || 8080;
-//console logging option
+//hapi good logging
+var good = require('good');
 var options = {
   opsInterval: 1000,
   reporters: [{
